@@ -1,0 +1,23 @@
+{
+    "name": "argon/php-common",
+    "description": "Common PHP Classes",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dominic Roenicke",
+            "email": "argonthechecker@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "Argon\\PhpCommon\\": "src/",
+            "Argon\\PhpCommon\\Test\\": "test/"
+        }
+    },
+    "require": {},
+
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    }
+}
