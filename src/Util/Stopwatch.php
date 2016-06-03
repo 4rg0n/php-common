@@ -15,19 +15,19 @@ class Stopwatch
     /**
      * Holds the time of start in milliseconds
      *
-     * @var float
+     * @var double
      */
     private $startTime = 0.0;
 
     /**
      * Holds the time of stop in milliseconds
      *
-     * @var float
+     * @var double
      */
     private $stopTime = 0.0;
 
     /**
-     * Holds a list of remembered stop times in milliseconds
+     * Holds a list of remembered stop times in micro seconds
      *
      * @var array
      */
@@ -41,7 +41,7 @@ class Stopwatch
      */
     public function start()
     {
-        $this->startTime = $this->getMicroTime();
+        $this->startTime = $this->getCurrentMicroTime();
 
         return $this;
     }
@@ -54,7 +54,7 @@ class Stopwatch
      */
     public function stop()
     {
-        $this->stopTime = $this->getMicroTime();
+        $this->stopTime = $this->getCurrentMicroTime();
 
         return $this;
     }
@@ -68,7 +68,6 @@ class Stopwatch
     {
         $this->startTime = 0.0;
         $this->stopTime = 0.0;
-        $this->pauseTime = 0.0;
         $this->rememberedStopTimes = array();
 
         return $this;
@@ -78,11 +77,17 @@ class Stopwatch
      * Remembers the time when this method is called.
      * Saves the remembered time in a list.
      *
+     * @param string|int $key (optional) key for recognizing remembered time
+     *
      * @return Stopwatch
      */
-    public function remember()
+    public function remember($key = null)
     {
-        $this->rememberedStopTimes[] = $this->getMicroTime();
+        if ($key === null) {
+            $this->rememberedStopTimes[] = $this->getCurrentMicroTime();
+        } else {
+            $this->rememberedStopTimes[$key] = $this->getCurrentMicroTime();
+        }
 
         return $this;
     }
@@ -108,17 +113,25 @@ class Stopwatch
     /**
      * Returns the passed time from start to stop in milliseconds
      *
-     * @return integer
+     * @param bool $autoreset flag for automaticly resetting while getting the time
+     *
+     * @return double
      */
-    public function getTime()
+    public function getTime($autoreset = false)
     {
-        return $this->stopTime - $this->startTime;
+        $time = $this->stopTime - $this->startTime;
+
+        if ($autoreset === true) {
+            $this->reset();
+        }
+
+        return $time;
     }
 
     /**
      * Returns the start time in milliseconds
      *
-     * @return integer
+     * @return double
      */
     public function getStartTime()
     {
@@ -128,7 +141,7 @@ class Stopwatch
     /**
      * Returns the stop time in milliseconds
      *
-     * @return integer
+     * @return int
      */
     public function getStopTime()
     {
@@ -138,10 +151,20 @@ class Stopwatch
     /**
      * Returns the actual time in milliseconds
      *
-     * @return float
+     * @return double
      */
-    public function getMicroTime()
+    public function getCurrentMicroTime()
     {
         return microtime(true);
+    }
+
+    /**
+     * Returns the stopped time as string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getTime();
     }
 }
